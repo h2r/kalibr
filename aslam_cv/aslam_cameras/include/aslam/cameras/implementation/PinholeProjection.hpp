@@ -777,9 +777,15 @@ bool PinholeProjection<DISTORTION_T>::initializeIntrinsics(const std::vector<Gri
     }
   }
 
+  if(f_guesses.empty()){
+    //return false;
+    // https://github.com/ethz-asl/kalibr/issues/99
+    // https://github.com/tu-darmstadt-ros-pkg/kalibr/commit/2822f6a6f47b92b600de42fd1e82915f1b0b2fd7
+    // https://www.mouser.com/pdfdocs/Intel_D400_Series_Datasheet.pdf
+    // D435 focal length is 1.93 mm... but we'll use 400 (pixels?)
+    f_guesses.push_back(400.0);
+  }
   //get the median of the guesses
-  if(f_guesses.empty())
-    return false;
   double f0 = PinholeHelpers::medianOfVectorElements(f_guesses);
 
   //set the estimate
